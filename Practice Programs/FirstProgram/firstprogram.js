@@ -1,53 +1,62 @@
+// Global variables
+var renderer;
+var camera;
+var container;
+var scene;
+var cameraControls;
+
 function start() {
-	// set the scene size
-	var WIDTH = window.innerWidth,
-		HEIGHT = window.innerHeight;
+	init();
+	addCube();
+	animate();
+}
 
-	// set some camera attributes
-	var VIEW_ANGLE = 45,
-		ASPECT = WIDTH / HEIGHT,
-		NEAR = 0.1,
-		FAR = 10000;
+function init() {
+	// Set the scene size
+	var WIDTH = window.innerWidth, HEIGHT = window.innerHeight;
 
-	// get the DOM element to attach to
-	// - assume we've got jQuery to hand
-	var container = $('#canvas');
+	// Set some camera attributes
+	var VIEW_ANGLE = 45, ASPECT = WIDTH / HEIGHT, NEAR = 0.1, FAR = 10000;
 
-	// create a WebGL renderer, camera
-	// and a scene
-	var renderer = new THREE.WebGLRenderer();
-	var camera =
-		new THREE.PerspectiveCamera(
-			VIEW_ANGLE,
-			ASPECT,
-			NEAR,
-			FAR);
+	// Get the container element
+	container = $('#canvas');
 
-	// add trackball controls
-	var controls = new THREE.TrackballControls( camera );
-	controls.rotateSpeed = 1.0;
-	controls.zoomSpeed = 1.2;
-	controls.panSpeed = 0.8;
-	controls.noZoom = false;
-	controls.noPan = false;
-	controls.staticMoving = true;
-	controls.dynamicDampingFactor = 0.3;
-	//controls.target.set( 0, 0, 0 );
+	// Set up the camera
+	camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
 
-	var scene = new THREE.Scene();
+	// Add camera controls
+	/*cameraControls = new THREE.TrackballControls( camera, renderer.domElement );
+	cameraControls.dynamicDampingFactor = 0.3;
+	cameraControls.target.set(0, 0, 0);*/
 
-	// add the camera to the scene
-	scene.add(camera);
-
-	// the camera starts at 0,0,0
-	// so pull it back
-	camera.position.z = 300;
-
-	// start the renderer
+	// Create the renderer
+	renderer = new THREE.WebGLRenderer();
 	renderer.setSize(WIDTH, HEIGHT);
+	container.appendChild(renderer.domElement);
+
+	// Create the scene
+	scene = new THREE.Scene();
+
+	scene.add(camera);
+	container.append(renderer.domElement);
+
+	/* Lights */
+
+	// create a point light
+	var pointLight =
+	  new THREE.PointLight(0xFFFFFF);
+
+	// set its position
+	pointLight.position.x = 10;
+	pointLight.position.y = 50;
+	pointLight.position.z = 130;
+
+	// add to the scene
+	scene.add(pointLight);
+
 
 	// attach the render-supplied DOM element
-	container.append(renderer.domElement);
+	/*container.append(renderer.domElement);
 
 	// set up the sphere vars
 	var radius = 50,
@@ -76,13 +85,7 @@ function start() {
 
 	var square = new THREE.Mesh(squareGeometry);
 
-	var cubeGeometry = new THREE.CubeGeometry(100, 100, 100);
-var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0x1ec876 });
-var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
- 
-cube.rotation.y = Math.PI * 45 / 180;
- 
-scene.add(cube);
+	
 
 	// add the sphere to the scene
 	scene.add(sphere);
@@ -95,30 +98,30 @@ scene.add(cube);
 		new THREE.MeshLambertMaterial(
 			{
 			  color: 0xCC0000
-			});
+			});*/
 
-	// create a point light
-	var pointLight =
-		new THREE.PointLight(0xFFFFFF);
-
-	// set its position
-	pointLight.position.x = 10;
-	pointLight.position.y = 50;
-	pointLight.position.z = 130;
-
-	// add to the scene
-	scene.add(pointLight);
-
-	// draw!
-	renderer.render(scene, camera);
 
 	// set the geometry to dynamic
 	// so that it allow updates
-	sphere.geometry.dynamic = true;
+	/*sphere.geometry.dynamic = true;
 
 	// changes to the vertices
 	sphere.geometry.verticesNeedUpdate = true;
 
 	// changes to the normals
-	sphere.geometry.normalsNeedUpdate = true;
+	sphere.geometry.normalsNeedUpdate = true;*/
+}
+
+function addCube() {
+	var cubeGeometry = new THREE.CubeGeometry(100, 100, 100);
+	var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0x1ec876 });
+	var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+	 
+	cube.rotation.y = Math.PI * 45 / 180;
+	 
+	scene.add(cube);
+}
+
+function animate() {
+	renderer.render(scene, camera);
 }
